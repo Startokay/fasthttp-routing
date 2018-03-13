@@ -1,7 +1,7 @@
 # fasthttp-routing
 
-[![GoDoc](https://godoc.org/github.com/qiangxue/fasthttp-routing?status.png)](http://godoc.org/github.com/qiangxue/fasthttp-routing)
-[![Go Report](http://goreportcard.com/badge/qiangxue/fasthttp-routing)](http://goreportcard.com/report/qiangxue/fasthttp-routing)
+[![GoDoc](https://godoc.org/github.com/mintance/fasthttp-routing?status.png)](http://godoc.org/github.com/qiangxue/fasthttp-routing)
+[![Go Report](http://goreportcard.com/badge/mintance/fasthttp-routing)](http://goreportcard.com/report/qiangxue/fasthttp-routing)
 
 ## Description
 
@@ -41,12 +41,24 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
+type User struct {
+	Name  string `json:"name" xml:"name"`
+	Email string `json:"email" xml:"email"`
+}
+
 func main() {
 	router := routing.New()
 	
 	router.Get("/", func(c *routing.Context) error {
-		fmt.Fprintf(c, "Hello, world!")
-		return nil
+		return c.String(http.StatusOK, "Hello, world!")
+	})
+	
+	router.Get("/user", func(c *routing.Context) error {
+		u := &User{
+		    Name:  "Jon",
+		    Email: "jon@labstack.com",
+		}
+		return c.JSON(http.StatusOK, u)
 	})
 	
 	panic(fasthttp.ListenAndServe(":8080", router.HandleRequest))
