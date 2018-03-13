@@ -37,7 +37,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/qiangxue/fasthttp-routing"
+	"github.com/mintance/fasthttp-routing"
 	"github.com/valyala/fasthttp"
 )
 
