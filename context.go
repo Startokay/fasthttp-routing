@@ -5,9 +5,15 @@
 package routing
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/valyala/fasthttp"
+)
+
+var (
+	strContentType = []byte("Content-Type")
+	strApplicationJSON = []byte("application/json")
 )
 
 // SerializeFunc serializes the given data of arbitrary type into a byte array.
@@ -123,4 +129,27 @@ func Serialize(data interface{}) (bytes []byte, err error) {
 		}
 	}
 	return nil, nil
+}
+
+// Return simple text output
+func (c *Context) String(code int, s string) error {
+	c.SetStatusCode(code)
+	_, err := fmt.Fprintf(c, s)
+	return err
+}
+
+// Return JSON response
+func (c *Context) JSON(code int, i interface{}) error {
+	// Set content-type headers
+	c.Response.Header.SetCanonical(strContentType, strApplicationJSON)
+	// Set status code
+	c.SetStatusCode(code)
+	// Create context encoder
+	encoder := json.NewEncoder(c)
+
+	if c.QueryArgs().Has("pretty") {
+		encoder.SetIndent("", "    ")
+	}
+
+	return encoder.Encode(i)
 }
