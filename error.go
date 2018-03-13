@@ -29,6 +29,11 @@ func NewHTTPError(status int, message ...string) HTTPError {
 	return &httpError{status, http.StatusText(status)}
 }
 
+// Creates HTTPError instance from standard error.
+func ToHTTPError(err error) HTTPError {
+	return NewHTTPError(http.StatusInternalServerError, err.Error())
+}
+
 // Error returns the error message.
 func (e *httpError) Error() string {
 	return e.Message
